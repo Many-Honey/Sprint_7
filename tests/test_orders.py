@@ -32,10 +32,10 @@ class TestOrders:
 
     @allure.title('Проверка, что в тело ответа возвращается список заказов.')
     @allure.description('Проверяем, что при запросе списка заказов нового зарегистрированного курьера в теле ответа вернется ключ "orders" с пустым списком')
-    def test_courier_gets_list_of_orders(self, register_new_courier_return_login_password_delete_courier):
+    def test_courier_gets_list_of_orders(self, register_new_courier):
         #/v1/orders?courierId=1
         # получаем id курьера через логин
-        login_pass = register_new_courier_return_login_password_delete_courier
+        login_pass = register_new_courier
         payload_login = {"login": login_pass[0],
                          "password": login_pass[1]}
         response_login = requests.post(URL_LOGIN, data=payload_login)

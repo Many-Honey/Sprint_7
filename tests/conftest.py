@@ -7,8 +7,8 @@ from urls import *
 
 # фикстура возвращает тело запроса для создания нового курьера и удаляет созданного курьера в конце теста
 @pytest.fixture
-def generate_request_body_and_delete_courier(generate_request_body):
-    payload = generate_request_body
+def generate_request_body(request_body):
+    payload = request_body
     yield payload
     # формируем тело запроса для входа в систему
     payload_login = {
@@ -31,19 +31,20 @@ def generate_request_body_and_delete_courier(generate_request_body):
 
 
 # фикстура регистрации нового курьера возвращает список из логина и пароля
+# в конце теста фикстура удаляет курьера
 # если регистрация не удалась, возвращает пустой список
 @pytest.fixture
-def register_new_courier_return_login_password_delete_courier(generate_request_body):
+def register_new_courier(request_body):
     # создаём список, чтобы метод мог его вернуть
     login_pass = []
     # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
-    response = requests.post(URL_COURIER, data=generate_request_body)
+    response = requests.post(URL_COURIER, data=request_body)
 
     # если регистрация прошла успешно (код ответа 201), добавляем в список логин и пароль курьера
     if response.status_code == 201:
-        login_pass.append(generate_request_body["login"])
-        login_pass.append(generate_request_body["password"])
-        login_pass.append(generate_request_body["firstName"])
+        login_pass.append(request_body["login"])
+        login_pass.append(request_body["password"])
+        login_pass.append(request_body["firstName"])
 
     # возвращаем список
     yield login_pass
@@ -68,7 +69,7 @@ def register_new_courier_return_login_password_delete_courier(generate_request_b
 
 # фикстура возвращает тело запроса для создания нового курьера
 @pytest.fixture
-def generate_request_body():
+def request_body():
     # метод генерирует строку, состоящую только из букв нижнего регистра, в качестве параметра передаём длину строки
     def generate_random_string(length):
         letters = string.ascii_lowercase
